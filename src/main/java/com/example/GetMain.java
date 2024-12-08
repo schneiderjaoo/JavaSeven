@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+record Filme(String title, String year, String director) {}
+
 public class GetMain {
     static String escolhaFilme = "avengers";
     
@@ -32,13 +34,8 @@ public class GetMain {
                 .thenAccept(response -> {
                     JSONObject json = new JSONObject(response);
                     if (json.getString("Response").equals("True")) {
-                        String title = json.getString("Title");
-                        String year = json.getString("Year");
-                        String director = json.getString("Director");
-
-                        System.out.println("Title: " + title);
-                        System.out.println("Year: " + year);
-                        System.out.println("Director: " + director);
+                        Filme filme = criarFilme(json);
+                        exibirFilme(filme);
                     } else {
                         System.out.println("Filme não encontrado");
                     }
@@ -48,5 +45,19 @@ public class GetMain {
             System.out.println("Erro ao buscar filme na API: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static Filme criarFilme(JSONObject json) {
+        return new Filme(
+            json.getString("Title"),
+            json.getString("Year"),
+            json.getString("Director")
+        );
+    }
+
+    private static void exibirFilme(Filme filme) {
+        System.out.println("Title: " + filme.title());
+        System.out.println("Year: " + filme.year());
+        System.out.println("Director: " + filme.director());
     }
 }
